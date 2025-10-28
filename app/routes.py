@@ -1,5 +1,3 @@
-# In app/routes.py
-
 from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
 from app import db
 from app.forms import LoginForm, RegistrationForm, EventForm
@@ -81,7 +79,6 @@ def login():
         # If any login part fails, re-render the page with the submitted_role
         return render_template('login.html', title='Login', form=form, role=submitted_role)
 
-    # --- GET LOGIC ---
     # Get the intended role from the URL (e.g., /login?role=admin)
     intended_role = request.args.get('role', 'user')
     return render_template('login.html', title='Login', form=form, role=intended_role)
@@ -93,7 +90,7 @@ def logout():
     return redirect(url_for('main.login'))
 
 
-# --- New Welcome/Landing Page ---
+# --- Welcome Page ---
 @main.route("/")
 @main.route("/welcome")
 def welcome():
@@ -104,8 +101,7 @@ def welcome():
     return render_template('welcome.html', title='Welcome')
 
 
-# --- Main Home Route (Modified) ---
-# We removed the "/" route from here
+# --- Main Home Route ---
 @main.route("/home")
 @login_required
 def home():
@@ -114,12 +110,6 @@ def home():
     events = Event.query.filter(Event.date >= today).order_by(Event.date.asc()).all()
     
     return render_template('home.html', title='Home', events=events)
-
-# --- User-Facing Event Routes ---
-# In app/routes.py
-import datetime # Make sure this is imported at the top
-
-# ... other routes ...
 
 @main.route("/event/<int:event_id>")
 @login_required
@@ -130,7 +120,6 @@ def event_detail(event_id):
         event_id=event.id
     ).first()
     
-    # --- ADD THIS ---
     # Pass today's date to the template
     return render_template('event_detail.html', 
                             title=event.title, 
@@ -249,7 +238,6 @@ def update_event(event_id):
 def delete_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.admin.id != current_user.id:
-        # --- FIX APPLIED HERE ---
         abort(403)
     
     # cascade='all, delete-orphan' in models.py will auto-delete RSVPs

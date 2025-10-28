@@ -7,7 +7,6 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
-# Add 'main.' prefix to the login_view
 login_manager.login_view = 'main.login' 
 login_manager.login_message_category = 'info' 
 

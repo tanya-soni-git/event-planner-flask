@@ -1,9 +1,8 @@
-from app import db, login_manager # Make sure to import login_manager
+from app import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# UserMixin provides default implementations for Flask-Login
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
@@ -55,7 +54,6 @@ class RSVP(db.Model):
     def __repr__(self):
         return f'<RSVP {self.user.email} -> {self.event.title}: {self.status}>'
 
-# --- ADD THIS FUNCTION AT THE BOTTOM ---
 # This callback is used to reload the user object from the user ID stored in the session
 @login_manager.user_loader
 def load_user(user_id):

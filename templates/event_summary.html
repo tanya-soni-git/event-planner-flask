@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!-- Styles from your second example, enhanced with badges -->
     <style>
         .summary-card {
             background: #f9f9f9;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 25px;
-            max-width: 450px; /* Slightly wider for badges */
+            max-width: 450px; 
         }
         .summary-card h2 {
             margin-top: 0;
@@ -26,45 +25,42 @@
             margin-top: 20px;
         }
         .summary-card li {
-            padding: 12px 5px; /* Added a bit more padding */
+            padding: 12px 5px; 
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Vertically center text and badge */
+            align-items: center; 
             border-bottom: 1px solid #eee;
         }
         .summary-card li:last-child {
             border-bottom: none;
         }
         .summary-card li strong {
-             /* For the "Total" row */
             color: #333;
         }
 
-        /* --- Badge styles (inspired by Version 1) --- */
         .badge {
             display: inline-block;
             padding: .4em .7em;
-            font-size: 1em; /* Relative to the 1.1em li */
+            font-size: 1em; 
             font-weight: bold;
             line-height: 1;
             color: #fff;
             text-align: center;
-            border-radius: .35rem; /* Rounded corners */
+            border-radius: .35rem; 
         }
         .badge-going { 
-            background-color: #28a745; /* green */
+            background-color: #28a745; 
         }
         .badge-maybe { 
-            background-color: #ffc107; /* yellow */
-            color: #212529; /* Dark text for yellow */
+            background-color: #ffc107; 
+            color: #212529; 
         }
         .badge-decline { 
-            background-color: #dc3545; /* red */
+            background-color: #dc3545;
         }
         .badge-total { 
-            background-color: #007bff; /* blue */
+            background-color: #007bff; 
         }
-        /* --- End of Badge Styles --- */
 
         .back-link {
             margin-top: 20px;
@@ -77,12 +73,10 @@
         }
     </style>
 
-    <!-- Content combining both versions -->
     <div class="summary-card">
         <h2>RSVP Summary</h2>
         <p><strong>Event:</strong> {{ event.title }}</p>
         
-        <!-- List with styled badges -->
         <ul>
             <li>
                 Going
@@ -96,7 +90,6 @@
                 Decline
                 <span class="badge badge-decline">{{ counts.Decline }}</span>
             </li>
-            <!-- "Total" row, styled like V1 for consistency -->
             <li style="padding-top: 15px; margin-top: 5px;">
                 <strong>Total Responses:</strong>
                 <span class="badge badge-total">{{ counts.Going + counts.Maybe + counts.Decline }}</span>
@@ -104,7 +97,6 @@
         </ul>
     </div>
 
-    <!-- Superior "Back to Event" link from V1 -->
     <p>
         <a href="{{ url_for('main.event_detail', event_id=event.id) }}" class="back-link">&larr; Back to Event Details</a>
     </p>
