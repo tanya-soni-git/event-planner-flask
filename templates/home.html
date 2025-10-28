@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Upcoming Events</h2>
+    
+    <style>
+        .event-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .event-card h3 {
+            margin-top: 0;
+            color: #007bff; /* Uses the same blue as the base button */
+        }
+        .event-card h3 a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .event-card h3 a:hover {
+            text-decoration: underline;
+        }
+        .event-meta {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .event-description {
+            margin-bottom: 15px;
+        }
+        .event-admin-links {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        /* This class makes the admin buttons a bit smaller */
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+    </style>
+
+    {% if events %}
+        {% for event in events %}
+            <div class="event-card">
+                <h3><a href="{{ url_for('main.event_detail', event_id=event.id) }}">{{ event.title }}</a></h3>
+                
+                <div class="event-meta">
+                    <strong>Date:</strong> {{ event.date.strftime('%A, %B %d, %Y') }}<br>
+                    <strong>Time:</strong> {{ event.start_time.strftime('%I:%M %p') }} - {{ event.end_time.strftime('%I:%M %p') }}<br>
+                    <strong>Location:</strong> {{ event.location }}
+                </div>
+                
+                <p class="event-description">{{ event.description[:200] }}...</p>
+
+                {% if current_user.is_authenticated and current_user.role == 'Admin' and current_user.id == event.admin_id %}
+                    <div class="event-admin-links">
+                        <strong>Admin Actions:</strong>
+                        <a href="{{ url_for('main.update_event', event_id=event.id) }}" class="btn btn-small">Edit</a>
+                        <a href="{{ url_for('main.event_summary', event_id=event.id) }}" class="btn btn-small">View Summary</a>
+                        
+                        <form action="{{ url_for('main.delete_event', event_id=event.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure you want to delete this event? This action cannot be undone.');">Delete</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No upcoming events found. <a href="{{ url_for('main.create_event') }}">Create one?</a></p>
+    {% endif %}
+{% endblock content %}

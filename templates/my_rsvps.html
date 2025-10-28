@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+
+    <style>
+        .rsvp-list-item {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rsvp-list-item h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        .rsvp-list-item h3 a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .rsvp-list-item h3 a:hover {
+            text-decoration: underline;
+        }
+        .rsvp-info {
+            color: #555;
+            font-size: 0.9em;
+        }
+        .rsvp-status {
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 5px;
+            min-width: 80px;
+            text-align: center;
+        }
+        /* Color-code the status */
+        .status-Going {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-Maybe {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-Decline {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
+    {% if rsvps %}
+        <div class="rsvp-list">
+            {% for rsvp in rsvps %}
+                <div class="rsvp-list-item">
+                    <div>
+                        <h3>
+                            <a href="{{ url_for('main.event_detail', event_id=rsvp.event.id) }}">
+                                {{ rsvp.event.title }}
+                            </a>
+                        </h3>
+                        <div class="rsvp-info">
+                            <strong>Date:</strong> {{ rsvp.event.date.strftime('%B %d, %Y') }}<br>
+                            <strong>Location:</strong> {{ rsvp.event.location }}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="rsvp-status status-{{ rsvp.status }}">{{ rsvp.status }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have not RSVP'd to any events yet.</p>
+        <p>
+            <a href="{{ url_for('main.home') }}" class="btn">View Upcoming Events</a>
+        </p>
+    {% endif %}
+
+{% endblock content %}

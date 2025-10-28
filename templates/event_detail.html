@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        .event-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        .event-header h2 {
+            margin-bottom: 5px;
+        }
+        .event-meta-detail {
+            font-size: 1.1em;
+            color: #333;
+            line-height: 1.6;
+        }
+        .event-description {
+            margin-top: 20px;
+            line-height: 1.7;
+            /* Allow line breaks from the database to render */
+            white-space: pre-wrap; 
+        }
+        .rsvp-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .rsvp-section h3 {
+            margin-top: 0;
+        }
+        
+        /* Base button style for this form */
+        .rsvp-form button {
+            font-size: 1em;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            color: #333;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .rsvp-form button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* This is the "selected" state logic from your second example.
+         It highlights the button that matches the user's current RSVP.
+        */
+        .rsvp-form button.selected {
+            font-weight: bold;
+            color: white;
+        }
+        .rsvp-form button.going.selected { 
+            border-color: #28a745; 
+            background-color: #28a745; 
+        }
+        .rsvp-form button.maybe.selected { 
+            border-color: #ffc107; 
+            background-color: #ffc107; 
+            color: #212529; /* Dark text for yellow bg */
+        }
+        .rsvp-form button.decline.selected { 
+            border-color: #dc3545; 
+            background-color: #dc3545; 
+        }
+
+        .admin-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .admin-actions .btn {
+            margin-right: 10px;
+        }
+    </style>
+
+    <div class="event-header">
+        <h2>{{ event.title }}</h2>
+        <div class="event-meta-detail">
+            <strong>Date:</strong> {{ event.date.strftime('%A, %B %d, %Y') }}<br>
+            <strong>Time:</strong> {{ event.start_time.strftime('%I:%M %p') }} - {{ event.end_time.strftime('%I:%M %p') }}<br>
+            <strong>Location:</strong> {{ event.location }}<br>
+            <strong>Hosted by:</strong> {{ event.admin.email }}
+        </div>
+    </div>
+
+    <div class="event-description">
+        {{ event.description | safe }}
+    </div>
+
+    <div class="rsvp-section">
+        {% if event.date < today %}
+            <h3>RSVPs are closed</h3>
+            <p>This event has already passed.</p>
+        
+        {% else %}
+            <h3>Your RSVP</h3>
+            
+            {% if current_rsvp %}
+                <p>Your current status: <strong>{{ current_rsvp.status }}</strong></p>
+            {% else %}
+                <p>You have not RSVP'd to this event yet.</p>
+            {% endif %}
+
+            <form class="rsvp-form" action="{{ url_for('main.rsvp', event_id=event.id) }}" method="POST">
+                <p>Update your status:</p>
+                <button type="submit" name="status" value="Going" 
+                        class="going {% if current_rsvp and current_rsvp.status == 'Going' %}selected{% endif %}">
+                    Going
+                </button>
+                <button type="submit" name="status" value="Maybe" 
+                        class="maybe {% if current_rsvp and current_rsvp.status == 'Maybe' %}selected{% endif %}">
+                    Maybe
+                </button>
+                <button type="submit" name="status" value="Decline" 
+                        class="decline {% if current_rsvp and current_rsvp.status == 'Decline' %}selected{% endif %}">
+                    Decline
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    {% if current_user.is_authenticated and current_user.role == 'Admin' and event.admin_id == current_user.id %}
+        <div class="admin-actions">
+            <strong>Admin Actions:</strong><br><br>
+            <a class="btn" href="{{ url_for('main.event_summary', event_id=event.id) }}">View RSVP Summary</a>
+            <a class="btn" href="{{ url_for('main.update_event', event_id=event.id) }}">Edit Event</a>
+        </div>
+    {% endif %}
+
+{% endblock content %}

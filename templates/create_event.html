@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    <style>
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group textarea {
+            min-height: 120px;
+        }
+    </style>
+    
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.title.label }}
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description }}
+        </div>
+        <div class="form-group">
+            {{ form.date.label }}
+            {{ form.date(type="date") }} </div>
+        <div class="form-group">
+            {{ form.start_time.label }}
+            {{ form.start_time(type="time") }} </div>
+        <div class="form-group">
+            {{ form.end_time.label }}
+            {{ form.end_time(type="time") }}
+        </div>
+        <div class="form-group">
+            {{ form.location.label }}
+            {{ form.location }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+{% endblock content %}
