@@ -5,7 +5,7 @@ A Flask-based web application to create and manage events with role-based access
 - Users: browse events, view details, RSVP (Going / Maybe / Decline), and edit RSVPs before event start.
 
 Live demo: https://event-planner-iixt.onrender.com 
-Demo video: https://drive.google.com/file/d/1wa_mN-DR--OVhPb2GUA-gawekhTg4Bhr/view?usp=sharing 
+Demo video:https://youtu.be/Gnzuhs2ZmaA
 
 ---
 
@@ -188,10 +188,10 @@ Notes:
 Recommended targets: Render, Heroku, DigitalOcean App Platform. The app is configured to use Gunicorn in production. Use environment variables on the hosting provider to set SECRET_KEY and DATABASE_URL.
 
 Deployed application:  
- https://event-planner-iixt.onrender.com 
+https://event-planner-iixt.onrender.com 
 
 Demo video (required, 3–5 min) showing signup/login, role-based access, event CRUD (admin), RSVP actions (user), and RSVP summary:  
-https://youtu.be/eSO8qhcfj_4
+https://youtu.be/Gnzuhs2ZmaA
 
 ---
 
