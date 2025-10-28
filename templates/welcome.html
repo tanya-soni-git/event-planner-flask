@@ -52,10 +52,10 @@
         <p>Please select your role to log in or register.</p>
         
         <div>
-            <a href="{{ url_for('main.login') }}" class="role-button role-user">
+            <a href="{{ url_for('main.login', role='user') }}" class="role-button role-user">
                 <strong>I am a User</strong>
             </a>
-            <a href="{{ url_for('main.login') }}" class="role-button role-admin">
+            <a href="{{ url_for('main.login', role='admin') }}" class="role-button role-admin">
                 <strong>I am an Admin</strong>
             </a>
         </div>

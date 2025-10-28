@@ -33,7 +33,7 @@ def register():
         
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data, role='Admin')
+        user = User(email=form.email.data, role='User')
         user.set_password(form.password.data)
         
         db.session.add(user)
@@ -51,21 +51,40 @@ def login():
         return redirect(url_for('main.home'))
         
     form = LoginForm()
+    
     if form.validate_on_submit():
+        # --- POST LOGIC ---
+        # Get the intended role from the hidden form field
+        submitted_role = request.form.get('role', 'user')
+        
         user = User.query.filter_by(email=form.email.data).first()
         
+        # Check if user exists and password is correct
         if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember.data)
             
-            next_page = request.args.get('next')
-            flash('Login Successful!', 'success')
-            
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            # NOW, check if their actual role matches their intended role
+            if (submitted_role == 'admin' and user.role == 'Admin') or \
+               (submitted_role == 'user' and user.role == 'User'):
+                
+                # Success! Log them in.
+                login_user(user, remember=form.remember.data)
+                next_page = request.args.get('next')
+                flash('Login Successful!', 'success')
+                return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            else:
+                # Role mismatch error
+                flash(f"You do not have permission to log in via the '{submitted_role}' portal.", 'danger')
         else:
+            # Bad email/password error
             flash('Login Unsuccessful. Please check email and password', 'danger')
-            
-    return render_template('login.html', title='Login', form=form)
+        
+        # If any login part fails, re-render the page with the submitted_role
+        return render_template('login.html', title='Login', form=form, role=submitted_role)
 
+    # --- GET LOGIC ---
+    # Get the intended role from the URL (e.g., /login?role=admin)
+    intended_role = request.args.get('role', 'user')
+    return render_template('login.html', title='Login', form=form, role=intended_role)
 
 @main.route("/logout")
 def logout():
