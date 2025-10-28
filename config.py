@@ -1,12 +1,19 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Get the database URL from the environment
 db_url = os.environ.get('DATABASE_URL')
 
-# FIX: Replace 'postgres://' with 'postgresql://' for Render
-if db_url and db_url.startswith('postgres://'):
-    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+# --- NEW ROBUST FIX ---
+# Render's DB URL might be 'postgres://' OR 'PostgreSQL://'
+# SQLAlchemy's driver requires 'postgresql://' (with 'ql')
+if db_url:
+    if db_url.startswith('PostgreSQL://'):
+        # Replace uppercase
+        db_url = db_url.replace('PostgreSQL://', 'postgresql://', 1)
+    elif db_url.startswith('postgres://'):
+        # Replace lowercase
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+# --- END OF FIX ---
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-very-secret-fallback-key'
